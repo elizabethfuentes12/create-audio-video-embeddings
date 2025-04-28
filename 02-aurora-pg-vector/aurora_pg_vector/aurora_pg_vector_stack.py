@@ -14,7 +14,6 @@ from layers import RequestsAWSAuth
 from lambdas import Lambdas
 
 
-ssm_client              = boto3.client("ssm")
 bedrock_user            = "bedrock_user"
 table_name              = "knowledge_bases"
 default_database_name   = "kbdata"
@@ -24,6 +23,9 @@ class AuroraPgVectorVideoStack(Stack):
 
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
+
+        # Create SSM client with the same region as the stack
+        ssm_client = boto3.client("ssm", region_name=self.region)
 
         vpc_id = ssm_client.get_parameter(Name="/vpc-id")["Parameter"]["Value"]
         vpc = ec2.Vpc.from_lookup(self, "VPC", vpc_id=vpc_id)

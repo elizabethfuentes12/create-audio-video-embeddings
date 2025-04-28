@@ -15,13 +15,14 @@ from workflows import AudioVideoWorkflow
 from lambdas import Lambdas
 from databases import Tables
 
-ssm_client = boto3.client("ssm")
-
 
 class AudioVideoWorkflowStack(Stack):
 
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
+
+        # Create SSM client with the same region as the stack
+        ssm_client = boto3.client("ssm", region_name=self.region)
 
         cluster_arn         = ssm_client.get_parameter(Name="/videopgvector/cluster_arn")["Parameter"]["Value"]
         secret_arn          = ssm_client.get_parameter(Name="/videopgvector/secret_arn")["Parameter"]["Value"]

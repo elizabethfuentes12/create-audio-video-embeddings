@@ -1,6 +1,12 @@
 import boto3
 import json
 from botocore.exceptions import ClientError  # import botocore.exceptions
+import logging  # import logging
+
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 class PGSetup():
     def __init__(self, client, cluster_arn, secrets_arn, database_name, table_name,credentials_arn):
@@ -29,7 +35,7 @@ class PGSetup():
         self.create_tables()
 
     def create_tables(self):
-        table_name = self.sanitize_table_name(self.table_name)
+        table_name = self.table_name
         sql = f"CREATE TABLE IF NOT EXISTS bedrock_integration.{table_name} (id uuid PRIMARY KEY, embedding vector(1024), chunks text, time integer, metadata json, \"date\" text, source text, sourceurl text, topic text, content_type text, language varchar(10));"
 
         response = self.client.execute_statement(

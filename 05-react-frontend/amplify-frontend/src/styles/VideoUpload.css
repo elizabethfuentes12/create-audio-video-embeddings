@@ -1,0 +1,146 @@
+.video-upload {
+  padding: 1.5rem;
+}
+
+.video-upload h2 {
+  margin-top: 0;
+  color: #232f3e;
+}
+
+.upload-container {
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  padding: 2rem;
+}
+
+.file-input-container {
+  margin-bottom: 1.5rem;
+}
+
+.file-input-container input[type="file"] {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+.file-input-container label {
+  display: block;
+  width: 100%;
+  padding: 2rem;
+  background-color: #f8f8f8;
+  border: 2px dashed #ddd;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+  color: #555;
+}
+
+.file-input-container label:hover {
+  background-color: #f0f0f0;
+  border-color: #ccc;
+}
+
+.file-input-container label.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.file-details {
+  background-color: #f8f8f8;
+  padding: 1rem;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+}
+
+.file-details p {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+}
+
+.error-message {
+  color: #d93025;
+  margin: 1rem 0;
+  padding: 0.5rem;
+  background-color: rgba(217, 48, 37, 0.1);
+  border-radius: 4px;
+}
+
+.progress-container {
+  margin: 1.5rem 0;
+}
+
+.progress-bar {
+  height: 8px;
+  background-color: #eee;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.progress {
+  height: 100%;
+  background-color: #ff9900;
+  transition: width 0.3s ease;
+}
+
+.upload-button {
+  display: block;
+  width: 100%;
+  padding: 0.8rem;
+  background-color: #ff9900;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.upload-button:hover {
+  background-color: #e88b00;
+}
+
+.upload-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.upload-info {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #eee;
+}
+
+.upload-info h3 {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  color: #232f3e;
+}
+
+.upload-info ol {
+  padding-left: 1.5rem;
+}
+
+.upload-info li {
+  margin-bottom: 0.5rem;
+  color: #555;
+}
+
+@media (max-width: 768px) {
+  .upload-container {
+    padding: 1.5rem;
+  }
+  
+  .file-input-container label {
+    padding: 1.5rem;
+  }
+}
