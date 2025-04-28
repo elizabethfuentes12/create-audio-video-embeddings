@@ -18,13 +18,11 @@ class CustomEncoder(json.JSONEncoder):
 
 
 # get the whole item from table_name
-from boto3.dynamodb.conditions import Key  # import boto3
-
 def get_item(table, key_item):
-    response = table.get_item(
-        Key={k: Key(k).eq(v) for k, v in key_item.items()}
-    )
-    return response.get('Item')
+        response = table.get_item(
+            Key=key_item
+        )
+        return response.get('Item')
 
 
 def build_update_expression(to_update):
@@ -53,7 +51,5 @@ def update_item(table, key, update_obj):
         ExpressionAttributeNames=attr_names,
         ExpressionAttributeValues=attr_values,
         ReturnValues="ALL_NEW",
-        ConditionExpression="attribute_exists(#pk)", # import boto3
-        ExpressionAttributeNames={"#pk": list(key.keys())[0]}
     )
     return table_update.get("Attributes")

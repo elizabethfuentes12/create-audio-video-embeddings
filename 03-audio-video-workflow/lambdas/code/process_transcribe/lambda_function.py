@@ -16,10 +16,12 @@ transcribe_table = dynamodb.Table(TRANSCRIBE_TABLE_NAME)
 
 
 def lambda_handler(event, context):
-    # Removed print(event) to avoid logging potentially sensitive information
+    print(event)
     job_name, job_status, transcription_job_details, mediaurl, transcripturl = get_transcribe_result_data(event)
 
-    # Removed print(transcription_job_details) to avoid logging potentially sensitive information
+    print (transcription_job_details)
+
+
 
     to_update = {
         "status": job_status,

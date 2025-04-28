@@ -73,14 +73,12 @@ def build_response(status_code, json_content):
     }
 
 # get the whole item from table_name
-from boto3.dynamodb.conditions import Key  # import boto3.dynamodb.conditions
-
-def get_item_from_table(table_name, key_item):
-    table = dynamodb.Table(table_name)
-    response = table.get_item(
-        Key={k: Key(k).eq(v) for k, v in key_item.items()}
-    )
-    return response.get('Item')
+def get_item_from_table(table_name,  key_item):
+        table = dynamodb.Table(table_name)
+        response = table.get_item(
+            Key=key_item
+        )
+        return response.get('Item')
 
 
 
@@ -116,19 +114,19 @@ def upload_file(bucket, key, filename):
         return False
     
 
-def update_item(table_name, id, key, value):
-    from boto3.dynamodb.conditions import Attr  # import boto3.dynamodb.conditions
+def update_item(table_name,id, key, value):
+
 
     table = dynamodb.Table(table_name)
 
     response = table.update_item(
-        Key={'id': Attr('id').eq(id)},
-        UpdateExpression="SET #item = :val",
+        Key={'id': id},
+        UpdateExpression=f"SET #item = :val",
         ExpressionAttributeNames={'#item': key},
         ExpressionAttributeValues={':val': value},
         ReturnValues="UPDATED_NEW"
     )
-    print(response)
+    print (response) 
 
 class DecimalEncoder(json.JSONEncoder):
    def default(self, obj):
@@ -165,10 +163,8 @@ def get_email(evt):
     return None
 
 
-from boto3.dynamodb.conditions import Key  # import boto3.dynamodb.conditions
-
 def get_saldo(table, key, value):
-    response = table.query(KeyConditionExpression=Key(key).eq(str(value)))
+    response = table.query(KeyConditionExpression=Key(key).eq(value))
     return response.get("Items", [])
 
 def replace_non_alphanumeric(string):

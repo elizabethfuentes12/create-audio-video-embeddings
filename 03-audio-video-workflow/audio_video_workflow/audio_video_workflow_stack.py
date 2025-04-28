@@ -9,6 +9,9 @@ from aws_cdk import (
     RemovalPolicy,
     aws_logs as logs,
     aws_iam as iam,
+    aws_lambda_event_sources as lambda_event_sources,
+    aws_s3_notifications,
+    aws_s3_deployment as s3deploy # Add this import
 )
 from constructs import Construct
 from workflows import AudioVideoWorkflow
@@ -103,6 +106,7 @@ class AudioVideoWorkflowStack(Stack):
         video_bucket.grant_read_write(Fn.start_transcribe)
         video_bucket.grant_read_write(Fn.process_transcribe)
         video_bucket.grant_read_write(Fn.process_results)
+        video_bucket.grant_read_write(Fn.s3_trigger)
 
         T.transcriptions.grant_read_write_data(Fn.process_transcribe)
         T.transcriptions.grant_read_write_data(Fn.start_transcribe)
@@ -111,3 +115,24 @@ class AudioVideoWorkflowStack(Stack):
         Fn.process_results.add_to_role_policy(iam.PolicyStatement(actions=["bedrock:*"], resources=["*"]))
         Fn.process_results.add_to_role_policy(iam.PolicyStatement(actions=["rds-data:ExecuteStatement"], resources=[cluster_arn]))
         Fn.process_results.add_to_role_policy(iam.PolicyStatement(actions=["secretsmanager:GetSecretValue"], resources=[secret_arn]))
+
+        Fn.s3_trigger.add_environment("STATE_MACHINE_ARN", workflow._workflow.state_machine_arn)
+        Fn.s3_trigger.add_environment("BUCKET_NAME", video_bucket.bucket_name)
+
+        video_bucket.add_event_notification(s3.EventType.OBJECT_CREATED,
+                                              aws_s3_notifications.LambdaDestination(Fn.s3_trigger),
+                                              s3.NotificationKeyFilter(prefix="voice/"))
+        
+        # Create empty folders (prefixes) in the bucket
+        s3deploy.BucketDeployment(self, "CreateFolders",
+        sources=[s3deploy.Source.data("voice/placeholder.txt", "")], # Creates voice_ folder
+        destination_bucket=video_bucket,
+        retain_on_delete=False,
+        )
+    
+        Fn.s3_trigger.add_to_role_policy(
+            iam.PolicyStatement(
+                actions=["states:StartExecution"],
+                resources=[workflow._workflow.state_machine_arn],
+            )
+        )
