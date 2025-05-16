@@ -70,6 +70,19 @@ class Lambdas(Construct):
         )
 
         # ======================================================================
+        # Lambda  retriveal
+        # ======================================================================
+
+        self.retrieval = aws_lambda.Function(
+            self,
+            "retrieval",
+            handler="lambda_function.lambda_handler",
+            layers=[lc_layer.layer],
+            code=aws_lambda.Code.from_asset("./lambdas/code/retrieval"),
+            **LAMBDA_CONFIG
+        )
+
+        # ======================================================================
         # Lambda  procesa la transcripcion y los frames
         # ======================================================================
         self.process_results = aws_lambda.Function(

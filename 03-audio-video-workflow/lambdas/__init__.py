@@ -1,1 +1,1 @@
-from lambdas.project_lambdas import Lambdas, BASE_LAMBDA_CONFIG
+from lambdas.project_lambdas import Lambdas
