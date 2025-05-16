@@ -1,58 +1,169 @@
+# ECS Cluster for Audio/Video Embeddings Processing
 
-# Welcome to your CDK Python project!
+This CDK project creates the foundational infrastructure for an audio and video processing application that generates embeddings from media files. The infrastructure includes:
 
-This is a blank project for CDK development with Python.
+- An Amazon ECS (Elastic Container Service) cluster named "video-processing"
+- A VPC with public and private subnets for secure networking
+- SSM parameters to store cluster and VPC information for use by other stacks
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+## Application Overview
 
-This project is set up like a standard Python project.  The initialization
-process also creates a virtualenv within this project, stored under the `.venv`
-directory.  To create the virtualenv it assumes that there is a `python3`
-(or `python` for Windows) executable in your path with access to the `venv`
-package. If for any reason the automatic creation of the virtualenv fails,
-you can create the virtualenv manually.
+This stack is the first component of a multi-stack application designed to process audio and video files to create embeddings. Embeddings are numerical representations of media content that can be used for:
 
-To manually create a virtualenv on MacOS and Linux:
+- Content-based search and retrieval
+- Similarity detection
+- Classification and categorization
+- Recommendation systems
 
+The ECS cluster created by this stack will host containerized applications that perform:
+- Media file extraction and processing
+- Feature extraction from audio/video content
+- Embedding generation using machine learning models
+- Storage and indexing of the resulting embeddings
+
+## Prerequisites
+
+- AWS CLI configured with appropriate credentials
+- Python 3.8 or later
+- Node.js 14.x or later (for CDK)
+- AWS CDK Toolkit installed (`npm install -g aws-cdk`)
+- Docker (for local testing if needed)
+
+## Project Setup
+
+The initialization process creates a virtualenv within this project, stored under the `.venv` directory.
+
+### Create and Activate Virtual Environment
+
+**MacOS/Linux:**
+
+```bash
+# Create virtual environment
+python3 -m venv .venv
+
+# Activate virtual environment
+source .venv/bin/activate
 ```
-$ python3 -m venv .venv
+
+**Windows:**
+
+```cmd
+# Create virtual environment
+python -m venv .venv
+
+# Activate virtual environment
+.venv\Scripts\activate.bat
 ```
 
-After the init process completes and the virtualenv is created, you can use the following
-step to activate your virtualenv.
+### Install Dependencies
 
-```
-$ source .venv/bin/activate
-```
+Once the virtualenv is activated, install the required dependencies:
 
-If you are a Windows platform, you would activate the virtualenv like this:
-
-```
-% .venv\Scripts\activate.bat
+```bash
+pip install -r requirements.txt
 ```
 
-Once the virtualenv is activated, you can install the required dependencies.
+## Deployment
 
-```
-$ pip install -r requirements.txt
-```
+### Bootstrap Your AWS Environment (First-time only)
 
-At this point you can now synthesize the CloudFormation template for this code.
+If you haven't used CDK in your AWS account/region before:
 
-```
-$ cdk synth
+```bash
+cdk bootstrap aws://ACCOUNT-NUMBER/REGION
 ```
 
-To add additional dependencies, for example other CDK libraries, just add
-them to your `setup.py` file and rerun the `pip install -r requirements.txt`
-command.
+Replace `ACCOUNT-NUMBER` with your AWS account ID and `REGION` with your desired AWS region (e.g., us-east-1).
 
-## Useful commands
+### Configure Deployment Region (Optional)
 
- * `cdk ls`          list all stacks in the app
- * `cdk synth`       emits the synthesized CloudFormation template
- * `cdk deploy`      deploy this stack to your default AWS account/region
- * `cdk diff`        compare deployed stack with current state
- * `cdk docs`        open CDK documentation
+By default, the application deploys to the us-east-1 region. To deploy to a different region:
 
-Enjoy!
+```bash
+export AWS_DEFAULT_REGION=your-preferred-region
+```
+
+### Deploy the ECS Cluster
+
+```bash
+# Synthesize CloudFormation template to review changes
+cdk synth
+
+# Deploy the stack
+cdk deploy
+```
+
+During deployment, you'll be prompted to confirm the IAM changes. Review them and type 'y' to proceed.
+
+### Verify Deployment
+
+After deployment, you can verify the resources in the AWS Management Console:
+- ECS cluster named "video-processing" in the ECS console
+- A new VPC with public and private subnets in the VPC console
+- SSM parameters in the Systems Manager Parameter Store:
+  - `/cluster-name`: Contains the ECS cluster name
+  - `/vpc-id`: Contains the VPC ID
+
+## Architecture Details
+
+This stack creates the foundational infrastructure for the audio/video processing application:
+
+1. **ECS Cluster**: A logical grouping of tasks or services that will run the containerized applications for processing media files
+2. **VPC**: A virtual network with:
+   - Public subnets for internet-facing components
+   - Private subnets for secure processing
+   - NAT gateways for outbound internet access from private subnets
+3. **SSM Parameters**: Stored references that allow other stacks to find and use these resources
+
+## Cost Considerations
+
+This stack creates resources that may incur AWS charges:
+- VPC with NAT Gateways (hourly cost + data processing)
+- ECS Cluster (no charge for the cluster itself, but tasks/services will incur costs)
+
+Consider using the AWS Pricing Calculator to estimate costs before deployment.
+
+## Useful Commands
+
+* `cdk ls`          List all stacks in the app
+* `cdk synth`       Emits the synthesized CloudFormation template
+* `cdk deploy`      Deploy this stack to your default AWS account/region
+* `cdk diff`        Compare deployed stack with current state
+* `cdk docs`        Open CDK documentation
+* `cdk destroy`     Remove the stack from your account/region when no longer needed
+
+## Next Steps
+
+After deploying this infrastructure stack, you can:
+1. Deploy task definitions and services to the ECS cluster
+2. Configure your audio/video processing containers
+3. Set up the necessary IAM roles and permissions
+4. Deploy additional stacks for storage, processing, and API access
+
+## Troubleshooting
+
+If you encounter issues during deployment:
+
+1. Check your AWS credentials and permissions
+2. Verify that you have the correct CDK version installed
+3. Review the CloudFormation events in the AWS Console for detailed error messages
+4. Ensure you have sufficient service quotas for the resources being created
+
+## Contributing
+
+Please refer to the project's main README for contribution guidelines.
+
+## Security
+
+This infrastructure is designed with security best practices in mind:
+- Private subnets for processing tasks
+- Least privilege IAM permissions
+- No direct internet access to processing containers
+
+## License
+
+This library is licensed under the MIT-0 License. See the LICENSE file.
+
+---
+
+*This README was generated and improved with Amazon Q CLI.*
