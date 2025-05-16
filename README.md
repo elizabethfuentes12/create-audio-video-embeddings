@@ -73,7 +73,7 @@ cd create-audio-video-embeddings
 
 2. APP Set Up:
 
-✅ Create The Virtual Environment: by following the steps in the [README](/private-assistant/README.md)
+✅ Create The Virtual Environment: by following the steps in the [README](/01-ecs-cluster/README.md)
 
 ```bash
 python3 -m venv .venv
@@ -121,14 +121,18 @@ cd ../03-audio-video-workflow
 cdk deploy
 ```
 
+Deploy retrieval workflow 
+```bash
+cd ../04-retrieval
+cdk deploy
+```
+
 ### Test the App 
 ✅  Go to the test environment
 
 ```bash
-cd ../04-test-app
+cd ../04-etrieval/test-retrival/
 ```
-
-✅ Open the Jupyter Notebobok [audio_video_embeddings_test.ipynb](./04-test-app/audio_video_embeddings_test.ipynb)
 
 1. Upload a video file to the input S3 bucket:
 ```bash
@@ -142,43 +146,9 @@ aws s3 cp your-video.mp4 s3://your-input-bucket/
 
 3. Query the results using the provided SQL functions:
 
-✅ Go to the notebobok [05_test_create_audio_video_embeddings.ipynb](../langchain-embeddings/notebooks/05_test_create_audio_video_embeddings.ipynb)
+✅ Go to the notebobok [01_query_audio_video_embeddings.ipynb](./04-etrieval/test-retrival/01_query_audio_video_embeddings.ipynb)
 
-
-```sql
-SELECT * FROM similarity_search('meeting about project updates');
-```
-
-### More Detailed Query Examples
-1. Search for specific moments in videos:
-```sql
-SELECT 
-    video_id,
-    transcript_text,
-    similarity_score
-FROM semantic_search(
-    'discussion about budget concerns',
-    0.7  -- similarity threshold
-)
-ORDER BY similarity_score DESC
-LIMIT 5;
-```
-
-2. Find visually similar frames:
-```sql
-SELECT 
-    frame_id,
-    video_id,
-    timestamp,
-    similarity_score
-FROM visual_similarity_search(
-    'reference_frame_id',
-    0.8  -- similarity threshold
-)
-LIMIT 10;
-```
-
-
+✅ Try the API [02_test_webook.ipynb](./04-etrieval/test-retrival/02_test_webook.ipynb)
 
 ----
 
