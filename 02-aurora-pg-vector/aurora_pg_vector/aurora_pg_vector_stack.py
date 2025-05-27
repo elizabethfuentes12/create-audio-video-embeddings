@@ -27,7 +27,7 @@ class AuroraPgVectorVideoStack(Stack):
         # Create SSM client with the same region as the stack
         ssm_client = boto3.client("ssm", region_name=self.region)
 
-        vpc_id = ssm_client.get_parameter(Name="/vpc-id")["Parameter"]["Value"]
+        vpc_id = ssm_client.get_parameter(Name="/videopgvector/ecs-vpc-id")["Parameter"]["Value"]
         vpc = ec2.Vpc.from_lookup(self, "VPC", vpc_id=vpc_id)
 
         self.cluster = AuroraDatabaseCluster(self, "AuroraDB", vpc=vpc, default_database_name=default_database_name)
@@ -66,4 +66,4 @@ class AuroraPgVectorVideoStack(Stack):
 
         ssm.StringParameter( self, "cluster_arn_ssm", parameter_name=f"/videopgvector/cluster_arn", string_value=self.cluster.cluster.cluster_arn)
         ssm.StringParameter( self, "secret_arn_ssm", parameter_name=f"/videopgvector/secret_arn", string_value=self.bedrock_secret.secret_arn)
-        ssm.StringParameter( self, "table_ssm", parameter_name=f"/videopgvector/video_table_name", string_value=table_name) 
+        ssm.StringParameter( self, "table_ssm", parameter_name=f"/videopgvector/video_table_name", string_value=default_database_name) 

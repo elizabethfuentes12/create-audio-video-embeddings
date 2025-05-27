@@ -71,64 +71,70 @@ This solution uses several AWS services that will incur costs:
 
 ### 1. Clone the repository:
 
-bash
-git clone https://github.com/build-on-aws/create-audio-video-embeddings
-cd create-audio-video-embeddings
-
+```bash
+git clone https://github.com/build-on-aws/langchain-embeddings
+cd container-video-embeddings
+```
 ### 2. Set up the environment:
-
 Create a virtual environment:
-bash
+
+```bash
 python3 -m venv .venv
+```
 
 Activate the virtual environment:
-bash
+```bash
 # For Linux/macOS
 source .venv/bin/activate
 
 # For Windows
 .venv\Scripts\activate.bat
+```
 
 Install dependencies:
-bash
-pip install -r requirements.txt
+```bash
+pip install -r 04-retrieval/requirements.txt
+```
 
-Synthesize the CloudFormation template:
-bash
-cdk synth
 
 ### 3. Deploy the infrastructure stacks:
 
 Deploy the Amazon ECS cluster:
-bash
+
+``bash
 cd 01-ecs-cluster
 cdk deploy
+```
 
 Deploy Amazon Aurora PostgreSQL:
-bash
+
+``bash
 cd ../02-aurora-pg-vector
 cdk deploy
+```
 
 Deploy AWS Step Functions workflow:
-bash
+``bash
 cd ../03-audio-video-workflow
 cdk deploy
+```
 
 Deploy retrieval workflow:
-bash
+``bash
 cd ../04-retrieval
 cdk deploy
+```
 
 ## Testing the Application
 
 Navigate to the test environment:
-bash
+```bash
 cd ../04-retrieval/test-retrieval/
-
+```
 ### 1. Upload a video file to the input S3 bucket:
-bash
+```bash
 aws s3 cp your-video.mp4 s3://your-input-bucket/
-
+```
 ### 2. The pipeline will automatically:
 - Extract audio and start transcription
 - Process video frames and generate embeddings

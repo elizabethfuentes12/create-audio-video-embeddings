@@ -14,17 +14,5 @@ class EcsClusterStack(Stack):
 
         ecs_cluster = ecs.Cluster(self, "Cluster", cluster_name="video-processing")
 
-        ssm.StringParameter(
-            self,
-            "ssm-cluster",
-            parameter_name="/cluster-name",
-            string_value=ecs_cluster.cluster_name,
-        )
-        
-        # Save the VPC ID in SSM Parameter Store
-        ssm.StringParameter(
-            self,
-            "ssm-vpc-id",
-            parameter_name="/vpc-id",
-            string_value=ecs_cluster.vpc.vpc_id,
-        )
+        ssm.StringParameter( self, "ssm-cluster", parameter_name="/videopgvector/ecs-cluster-name", string_value=ecs_cluster.cluster_name)
+        ssm.StringParameter( self, "ssm-vpc-id", parameter_name="/videopgvector/ecs-vpc-id", string_value=ecs_cluster.vpc.vpc_id)

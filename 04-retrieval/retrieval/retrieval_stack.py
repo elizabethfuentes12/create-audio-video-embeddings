@@ -10,7 +10,6 @@ from aws_cdk import (
 from constructs import Construct
 from apis import WebhookApi
 from lambdas import Lambdas
-from cognito import UserPool
 
 class RetrievalStack(Stack):
 
@@ -19,7 +18,6 @@ class RetrievalStack(Stack):
 
         ssm_client = boto3.client("ssm", region_name=self.region)
 
-        user_pool = UserPool(self, "user_pool")
 
         cluster_arn         = ssm_client.get_parameter(Name="/videopgvector/cluster_arn")["Parameter"]["Value"]
         secret_arn          = ssm_client.get_parameter(Name="/videopgvector/secret_arn")["Parameter"]["Value"]
@@ -48,12 +46,12 @@ class RetrievalStack(Stack):
         # API Gateway REST API
         # ======================================================================
 
-        Api = WebhookApi(self, "API", Fn.retrieval, cognito=user_pool.user_pool)
+        Api = WebhookApi(self, "API", Fn.retrieval)
 
         ssm.StringParameter(
             self,
             "api-retrieve",
-            parameter_name="/api/retrieve",
+            parameter_name="/videopgvector/api_retrieve",
             string_value=Api.retrieve_api_url,
         )
 

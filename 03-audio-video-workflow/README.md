@@ -110,6 +110,8 @@ cdk deploy
 
 During deployment, you'll be prompted to confirm the IAM changes. Review them and type 'y' to proceed.
 
+![Diagram](image/workflow_deployment.png)
+
 ### Verify Deployment
 
 After deployment, you can verify the resources in the AWS Management Console:
@@ -118,6 +120,8 @@ After deployment, you can verify the resources in the AWS Management Console:
 - ECS task definition in the ECS console
 - S3 bucket in the S3 console
 - DynamoDB tables in the DynamoDB console
+
+![Diagram](image/worksflow_done.png)
 
 ## Using the Workflow
 

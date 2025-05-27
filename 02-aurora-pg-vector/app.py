@@ -6,7 +6,7 @@ import aws_cdk as cdk
 
 from aurora_pg_vector import AuroraPgVectorVideoStack
 
-region = os.environ.get("AWS_DEFAULT_REGION", "us-east-1")
+region = os.environ.get("AWS_DEFAULT_REGION", "us-west-2")
 caller = boto3.client('sts').get_caller_identity()
 account_id = caller.get("Account")
 

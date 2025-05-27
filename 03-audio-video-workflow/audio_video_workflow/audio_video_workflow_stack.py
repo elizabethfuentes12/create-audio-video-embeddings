@@ -35,11 +35,14 @@ class AudioVideoWorkflowStack(Stack):
         Fn                  = Lambdas(self, "Fn")
         T                   = Tables(self, "T")
 
-        cluster_name        = ssm_client.get_parameter(Name="/cluster-name")["Parameter"]["Value"]
-        vpc_id              = ssm_client.get_parameter(Name="/vpc-id")["Parameter"]["Value"]
+        cluster_name        = ssm_client.get_parameter(Name="/videopgvector/ecs-cluster-name")["Parameter"]["Value"]
+        vpc_id              = ssm_client.get_parameter(Name="/videopgvector/ecs-vpc-id")["Parameter"]["Value"]
 
         Fn.start_transcribe.add_environment( key="BUCKET_NAME", value=video_bucket.bucket_name)
         Fn.start_transcribe.add_environment( key="TRANSCRIBE_TABLE", value=T.transcriptions.table_name)
+
+        ssm.StringParameter( self, "bucket_name", parameter_name=f"/videopgvector/bucket_name", string_value=video_bucket.bucket_name)
+
 
         Fn.process_transcribe.add_environment( key="BUCKET_NAME", value=video_bucket.bucket_name)
         Fn.process_transcribe.add_environment( key="TRANSCRIBE_TABLE", value=T.transcriptions.table_name)
@@ -102,6 +105,8 @@ class AudioVideoWorkflowStack(Stack):
         workflow._workflow.grant_task_response(task_role)
         workflow._workflow.grant_task_response(Fn.process_transcribe)
 
+        workflow._workflow.from_state_machine_arn
+
         video_bucket.grant_read_write(task_role)
         video_bucket.grant_read_write(Fn.start_transcribe)
         video_bucket.grant_read_write(Fn.process_transcribe)
@@ -118,14 +123,16 @@ class AudioVideoWorkflowStack(Stack):
 
         Fn.s3_trigger.add_environment("STATE_MACHINE_ARN", workflow._workflow.state_machine_arn)
         Fn.s3_trigger.add_environment("BUCKET_NAME", video_bucket.bucket_name)
+        ssm.StringParameter( self, "S_M_ARN", parameter_name=f"/videopgvector/state_machine_arn", string_value=workflow._workflow.state_machine_arn)
+
 
         video_bucket.add_event_notification(s3.EventType.OBJECT_CREATED,
                                               aws_s3_notifications.LambdaDestination(Fn.s3_trigger),
-                                              s3.NotificationKeyFilter(prefix="voice/"))
+                                              s3.NotificationKeyFilter(prefix="video/"))
         
         # Create empty folders (prefixes) in the bucket
         s3deploy.BucketDeployment(self, "CreateFolders",
-        sources=[s3deploy.Source.data("voice/placeholder.txt", "")], # Creates voice_ folder
+        sources=[s3deploy.Source.data("video/placeholder.txt", "")], # Creates voice_ folder
         destination_bucket=video_bucket,
         retain_on_delete=False,
         )

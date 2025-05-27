@@ -5,7 +5,7 @@ This CDK project creates a retrieval API for searching and querying embeddings g
 - An API Gateway REST API with Cognito authentication
 - Lambda functions for retrieval operations
 - Integration with the Aurora PostgreSQL vector database
-- User authentication and authorization via Amazon Cognito
+- User authentication and authorization via Amazon Cognito (optional)
 
 This is the fourth and final component of the audio/video embeddings processing application, following the ECS cluster, Aurora PostgreSQL vector database, and audio/video workflow stacks.
 
@@ -28,7 +28,6 @@ The retrieval system enables users to:
 
 - **API Gateway**: Provides REST API endpoints for retrieval operations
 - **Lambda Functions**: Process retrieval requests and generate responses
-- **Cognito User Pool**: Manages user authentication and authorization
 - **Integration with Aurora PostgreSQL**: Performs vector similarity searches
 - **Amazon Bedrock Integration**: Generates AI responses based on retrieved content
 
@@ -79,15 +78,6 @@ pip install -r requirements.txt
 
 ## Deployment
 
-### Bootstrap Your AWS Environment (First-time only)
-
-If you haven't used CDK in your AWS account/region before:
-
-```bash
-cdk bootstrap aws://ACCOUNT-NUMBER/REGION
-```
-
-Replace `ACCOUNT-NUMBER` with your AWS account ID and `REGION` with your desired AWS region (e.g., us-east-1).
 
 ### Configure Deployment Region (Optional)
 
@@ -109,6 +99,8 @@ cdk deploy
 
 During deployment, you'll be prompted to confirm the IAM changes. Review them and type 'y' to proceed.
 
+  ![Diagram](image/retrieval_deployment.png)
+
 ### Verify Deployment
 
 After deployment, you can verify the resources in the AWS Management Console:
@@ -116,23 +108,12 @@ After deployment, you can verify the resources in the AWS Management Console:
 - Lambda functions in the Lambda console
 - Cognito user pool in the Cognito console
 - SSM parameters in the Systems Manager Parameter Store:
-  - `/api/retrieve`: Contains the API endpoint URL
+  - `/videopgvector/api_retrieve`: Contains the API endpoint URL
   - `/videopgvector/lambda_retreval_name`: Contains the retrieval Lambda function name
+  
+  ![Diagram](image/retrieval_done.png)
 
 ## Using the API
-
-### Creating Users
-
-1. Navigate to the Cognito console using the URL provided in the CloudFormation outputs
-2. Create a new user with email and password
-3. Verify the user's email address
-
-### Authentication
-
-To authenticate with the API:
-1. Use the Cognito user pool ID and app client ID from the CloudFormation outputs
-2. Obtain an authentication token using the Cognito authentication flow
-3. Include the token in the `Authorization` header of API requests
 
 ### Making API Requests
 
@@ -209,7 +190,6 @@ This stack creates a serverless API with the following components:
 1. **API Gateway REST API**: Provides HTTP endpoints for retrieval operations
 2. **Lambda Functions**:
    - `retrieval`: Performs vector similarity searches and generates responses
-3. **Cognito User Pool**: Manages user authentication and authorization
 4. **Integration with Aurora PostgreSQL**: Executes vector similarity searches
 5. **Integration with Amazon Bedrock**: Generates AI responses based on retrieved content
 

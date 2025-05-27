@@ -1,4 +1,4 @@
-# ECS Cluster for Audio/Video Embeddings Processing
+# Amazon ECS Cluster for Audio/Video Embeddings Processing
 
 This CDK project creates the foundational infrastructure for an audio and video processing application that generates embeddings from media files. The infrastructure includes:
 
@@ -95,14 +95,29 @@ cdk deploy
 
 During deployment, you'll be prompted to confirm the IAM changes. Review them and type 'y' to proceed.
 
+This deployment takes approximately 162 seg.
+
+![Diagram](image/deployment.png)
+
+This stack stores in AWS Systems Manager the cluster name and VPC ID values ​​needed to deploy other stacks that are part of this application.
+
+```python
+ssm.StringParameter( self, "ssm-cluster", parameter_name="/videopgvector/ecs-cluster-name", string_value=ecs_cluster.cluster_name)
+
+ssm.StringParameter( self, "ssm-vpc-id", parameter_name="/videopgvector/ecs-vpc-id", string_value=ecs_cluster.vpc.vpc_id)
+```
+
 ### Verify Deployment
 
 After deployment, you can verify the resources in the AWS Management Console:
 - ECS cluster named "video-processing" in the ECS console
 - A new VPC with public and private subnets in the VPC console
 - SSM parameters in the Systems Manager Parameter Store:
-  - `/cluster-name`: Contains the ECS cluster name
-  - `/vpc-id`: Contains the VPC ID
+  - `videopgvector/cluster-name`: Contains the ECS cluster name
+  - `videopgvector/vpc-id`: Contains the VPC ID
+
+
+![Diagram](image/cdk_done.png)
 
 ## Architecture Details
 

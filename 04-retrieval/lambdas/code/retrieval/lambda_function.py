@@ -69,9 +69,12 @@ def process_event(api_event):
 
 def lambda_handler(api_event, context):
 
-    event = api_event
-    print("Received event:", json.dumps(event))
-
+    print("Received event:", json.dumps(api_event))
+    
+    # Process the API Gateway event to extract the body
+    event = process_event(api_event)
+    print("Processed event body:", json.dumps(event))
+    
     method = event.get("method", "retrieve")
 
     try:

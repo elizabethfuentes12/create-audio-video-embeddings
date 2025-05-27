@@ -1,4 +1,4 @@
-# Aurora PostgreSQL Vector Database for Audio/Video Embeddings
+# Amazon Aurora PostgreSQL Vector Database for Audio/Video Embeddings
 
 This CDK project creates an Amazon Aurora PostgreSQL database with vector capabilities for storing and querying embeddings generated from audio and video files. The infrastructure includes:
 
@@ -98,6 +98,12 @@ cdk deploy
 
 During deployment, you'll be prompted to confirm the IAM changes. Review them and type 'y' to proceed.
 
+This deployment takes approximately 594.29s.
+
+![Diagram](image/aurora_deployment.png)
+
+This stack stores in AWS Systems Manager the cluster arn, secret arn and video table name values ​​needed to deploy other stacks that are part of this application.
+
 ### Verify Deployment
 
 After deployment, you can verify the resources in the AWS Management Console:
@@ -107,6 +113,8 @@ After deployment, you can verify the resources in the AWS Management Console:
   - `/videopgvector/cluster_arn`: Contains the Aurora cluster ARN
   - `/videopgvector/secret_arn`: Contains the secret ARN for database credentials
   - `/videopgvector/video_table_name`: Contains the table name for video embeddings
+
+![Diagram](image/aurora_done.png)
 
 ## Architecture Details
 
